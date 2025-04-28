@@ -1,7 +1,9 @@
 package main
 
-import "github.com/ondbyte/proman/protocmanager"
+import (
+	"github.com/ondbyte/proman/cmd"
+)
 
 func main() {
-	protocmanager.Main()
+	cmd.Main()
 }
