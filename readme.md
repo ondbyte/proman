@@ -1,8 +1,12 @@
 # proman - protocmanager
+this tool keeps track of `protoc` and and its language specific plugins in a raw and hacky way, rather than relying on the path variables.
+
     protocmanager is cli tool to simplify the process of
         * setting up your machine with protobuff compiler(protoc)
         * installing compiler's language specific plugins
         * generating source files from proto files
+
+
 
 # install help
 for now install using `go install`
@@ -30,8 +34,8 @@ run `proman gen` without any arguments or with arguments to override whats in th
 |-----------|--------------------------------------|------------------|--------------------------------------|
 | Go        | `protoc-gen-go`, `protoc-gen-go-grpc` | ✅ Supported     | Standard Go + gRPC generation.       |
 | Dart      | `protoc_plugin`                      | ✅ Supported      | Dart/Flutter gRPC support.           |
-| Java      | *(planned)*                         | 🚧 In Progress    | Will use `protoc-gen-java`.           |
-| Python    | *(planned)*                         | 🚧 In Progress    | Will use `protoc-gen-python`.         |
-| TypeScript (gRPC-Web) | *(planned)*              | 🚧 In Progress    | Will use `protoc-gen-ts`, `protoc-gen-grpc-web`. |
+| TypeScript (gRPC-Web) | *(planned)*              | 🚧 In Progress      | Will use `protoc-gen-ts`, `protoc-gen-grpc-web`. |
+| Java      | *(planned)*                         | 🕒 Planned      | Will use `protoc-gen-java`.           |
+| Python    | *(planned)*                         | 🕒 Planned      | Will use `protoc-gen-python`.         |
 | C++       | *(future)*                          | 🕒 Planned         | Native C++ support.                  |
 

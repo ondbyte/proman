@@ -37,7 +37,7 @@ func (g *Go) IsInstalled() bool {
 
 // CmdForGenSource implements Language.
 func (g *Go) CmdForGenSource(protocCmd, protoFolder, sourceOutputFolder string, grpc bool) ([]string, error) {
-	protocGenGoPath, err := Where("protoc-gen-go")
+	protocGenGoPath, err := FindProtocGenGo()
 	if err != nil {
 		return nil, fmt.Errorf("failed to find protoc-gen-go: %w", err)
 	}
@@ -78,12 +78,6 @@ func (g *Go) Plugins() []string {
 		"go install google.golang.org/protobuf/cmd/protoc-gen-go@latest",
 		"go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest",
 	}
-}
-
-// PostPluginInstallMsg implements Language.
-func (g *Go) PostPluginInstallMsg() string {
-	p := filepath.Join(os.Getenv("$GOPATH"), "bin")
-	return "make sure you have " + p + " is in your PATH"
 }
 
 var _ Language = (*Go)(nil)
