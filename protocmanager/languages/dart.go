@@ -45,7 +45,7 @@ func readAllProtoFilesInDir(dir string) ([]string, error) {
 
 // CmdForGenSource implements Language.
 func (d *Dart) CmdForGenSource(protocCmd, protoFolder string, sourceOutputFolder string, grpc bool) ([]string, error) {
-	protocGenDartPath, err := Where("protoc-gen-dart")
+	protocGenDartPath, err := FindProtocGenDart()
 	if err != nil {
 		return nil, fmt.Errorf("failed to find protoc-gen-dart: %w", err)
 	}
