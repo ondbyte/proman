@@ -36,7 +36,13 @@ func (g *Go) IsInstalled() bool {
 }
 
 // CmdForGenSource implements Language.
-func (g *Go) CmdForGenSource(protocCmd, protoFolder, sourceOutputFolder string, grpc bool) ([]string, error) {
+func (g *Go) CmdForGenSource(
+	protocCmd,
+	importsPath,
+	inputFolder,
+	sourceOutputFolder string,
+	grpc bool,
+) ([]string, error) {
 	protocGenGoPath, err := FindProtocGenGo()
 	if err != nil {
 		return nil, fmt.Errorf("failed to find protoc-gen-go: %w", err)
@@ -44,19 +50,20 @@ func (g *Go) CmdForGenSource(protocCmd, protoFolder, sourceOutputFolder string, 
 	pre := []string{
 		protocCmd,
 		"--plugin=protoc-gen-go=" + protocGenGoPath,
-		"--proto_path=" + protoFolder,
+		"--proto_path=" + importsPath,
+		"--proto_path=" + inputFolder,
 		"--go_out=" + sourceOutputFolder,
 		"--go_opt=paths=source_relative",
 	}
 	if grpc {
 		pre = append(pre, "--go-grpc_out="+sourceOutputFolder, "--go-grpc_opt=paths=source_relative")
 	}
-	files, err := filepath.Glob(filepath.Join(protoFolder, "*.proto"))
+	files, err := listProtoFileNamesInFolder(inputFolder)
 	if err != nil {
-		return nil, fmt.Errorf("failed to glob proto files: %w", err)
+		return nil, fmt.Errorf("failed to list proto files: %w", err)
 	}
 	if len(files) == 0 {
-		return nil, fmt.Errorf("no proto files found in %s", protoFolder)
+		return nil, fmt.Errorf("no proto files found in %s", inputFolder)
 	}
 
 	return append(pre, files...), nil

@@ -2,9 +2,7 @@ package languages
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
-	"strings"
 )
 
 var _ = RegisterLanguage(&Dart{})
@@ -25,26 +23,14 @@ func (d *Dart) InstallPlugins() error {
 	return nil
 }
 
-func readAllProtoFilesInDir(dir string) ([]string, error) {
-	es, err := os.ReadDir(dir)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read dir: %w", err)
-	}
-	protoFiles := []string{}
-	for _, v := range es {
-		if v.IsDir() {
-			continue
-		}
-		if !strings.HasSuffix(v.Name(), ".proto") {
-			continue
-		}
-		protoFiles = append(protoFiles, v.Name())
-	}
-	return protoFiles, nil
-}
-
 // CmdForGenSource implements Language.
-func (d *Dart) CmdForGenSource(protocCmd, protoFolder string, sourceOutputFolder string, grpc bool) ([]string, error) {
+func (d *Dart) CmdForGenSource(
+	protocCmd,
+	importsPath,
+	inputFolder string,
+	sourceOutputFolder string,
+	grpc bool,
+) ([]string, error) {
 	protocGenDartPath, err := FindProtocGenDart()
 	if err != nil {
 		return nil, fmt.Errorf("failed to find protoc-gen-dart: %w", err)
@@ -54,18 +40,18 @@ func (d *Dart) CmdForGenSource(protocCmd, protoFolder string, sourceOutputFolder
 		dartOut += "grpc:"
 	}
 	dartOut += sourceOutputFolder
-	protofiles, err := readAllProtoFilesInDir(protoFolder)
+	files, err := listProtoFileNamesInFolder(inputFolder)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read proto files: %w", err)
+		return nil, fmt.Errorf("failed to list proto files: %w", err)
 	}
-	files := strings.Join(protofiles, " ")
-	return []string{
+	pre := []string{
 		protocCmd,
 		"--plugin=protoc-gen-dart=" + protocGenDartPath,
-		"--proto_path=" + protoFolder,
+		"--proto_path=" + importsPath,
+		"--proto_path=" + inputFolder,
 		"--dart_out=" + dartOut,
-		files,
-	}, nil
+	}
+	return append(pre, files...), nil
 }
 
 // Command implements Language.

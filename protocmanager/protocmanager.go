@@ -28,10 +28,20 @@ func init() {
 	}
 	protocManagerDir = filepath.Join(userCfgDir, "protocmanager")
 	protocCmdPath = filepath.Join(protocManagerDir, "protoc"+ext)
-	googleProtosSrcDir = filepath.Join(protocManagerDir, "google-protos-src")
+	googleProtosSrcDir = filepath.Join(protocManagerDir, "protobuf", "src")
 }
 
 func Generate(langs, in, out, add string, grpc bool) (err error) {
+	// get in and out path before we change path to protoc manager dir
+	in, err = filepath.Abs(in)
+	if err != nil {
+		return fmt.Errorf("failed to get absolute path of in folder: %w", err)
+	}
+	out, err = filepath.Abs(out)
+	if err != nil {
+		return fmt.Errorf("failed to get absolute path of out folder: %w", err)
+	}
+
 	if err := os.Chdir(protocManagerDir); err != nil {
 		return fmt.Errorf("error changing directory to protoc manager directory: %v", err)
 	}
@@ -75,7 +85,7 @@ func Generate(langs, in, out, add string, grpc bool) (err error) {
 		return fmt.Errorf("failed to get absolute path of out folder: %w", err)
 	}
 	for _, language := range langsToGen {
-		cmdToExec, err := language.CmdForGenSource(protocCmdPath, in, out, grpc)
+		cmdToExec, err := language.CmdForGenSource(protocCmdPath, googleProtosSrcDir, in, out, grpc)
 		if err != nil {
 			return fmt.Errorf("error getting command to execute: %v", err)
 		}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package program;
+
+option go_package = "github.com/ondbyte/proman/example";
+
+message ExampleMsg {
+    string name = 1;
+    map<string,google.protobuf.Any> params=2;
+}

@@ -8,7 +8,7 @@ import (
 
 func isGoogleProtosInstalled() bool {
 	_, err := os.Stat("protobuf")
-	return err != nil
+	return err == nil
 }
 
 func installGoogleProtos() error {

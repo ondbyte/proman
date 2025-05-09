@@ -36,5 +36,5 @@ type Language interface {
 	Name() string
 	Command() string
 	InstallPlugins() error
-	CmdForGenSource(protocCmd, protoFolder, sourceOutputFolder string, grpc bool) ([]string, error)
+	CmdForGenSource(protocCmd, importsPath, inputFolder, outputFolder string, grpc bool) ([]string, error)
 }
