@@ -2,14 +2,39 @@ package protocmanager
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/ondbyte/proman/protocmanager/languages"
 )
 
+var (
+	ext                = ""
+	protocManagerDir   = ""
+	protocCmdPath      = ""
+	googleProtosSrcDir = ""
+)
+
+func init() {
+	if runtime.GOOS == "windows" {
+		ext = ".exe"
+	}
+	userCfgDir, err := os.UserConfigDir()
+	if err != nil {
+		panic(err)
+	}
+	protocManagerDir = filepath.Join(userCfgDir, "protocmanager")
+	protocCmdPath = filepath.Join(protocManagerDir, "protoc"+ext)
+	googleProtosSrcDir = filepath.Join(protocManagerDir, "google-protos-src")
+}
+
 func Generate(langs, in, out, add string, grpc bool) (err error) {
+	if err := os.Chdir(protocManagerDir); err != nil {
+		return fmt.Errorf("error changing directory to protoc manager directory: %v", err)
+	}
 	if IsProtocInstalled() != nil {
 		defer func() {
 			if err != nil {
@@ -27,6 +52,12 @@ func Generate(langs, in, out, add string, grpc bool) (err error) {
 		err = InstallLangPlugins()
 		if err != nil {
 			return fmt.Errorf("error installing language plugins: %v", err)
+		}
+	}
+
+	if !isGoogleProtosInstalled() {
+		if err := installGoogleProtos(); err != nil {
+			return fmt.Errorf("error installing google protos: %v", err)
 		}
 	}
 

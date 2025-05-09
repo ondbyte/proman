@@ -4,6 +4,7 @@ this tool keeps track of `protoc` and and its language specific plugins in a raw
     protocmanager is cli tool to simplify the process of
         * setting up your machine with protobuff compiler(protoc)
         * installing compiler's language specific plugins
+        * maintains a copy of protos by google `https://github.com/protocolbuffers/protobuf`
         * generating source files from proto files
 
 

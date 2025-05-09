@@ -15,20 +15,6 @@ import (
 	"github.com/google/go-github/v71/github"
 )
 
-var ext = ""
-var protocCmdPath = ""
-
-func init() {
-	if runtime.GOOS == "windows" {
-		ext = ".exe"
-	}
-	userCFgDir, err := os.UserConfigDir()
-	if err != nil {
-		panic(err)
-	}
-	protocCmdPath = filepath.Join(userCFgDir, "protocmanager", "protoc"+ext)
-}
-
 func RemoveProtoc() error {
 	return os.Remove(protocCmdPath)
 }
